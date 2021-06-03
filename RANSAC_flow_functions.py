@@ -133,7 +133,7 @@ def show_coarse_alignment(I1_coarse_pil, I2, coarseModel):
 def show_fine_alignment(I1_fine_pil, I2, coarseModel):
     
     I1_fine_pil.save('./fine_tuned.png')
-    
+    '''
     plt.figure(figsize=(20, 10))    
     plt.subplot(1, 3, 1)
     plt.axis('off')
@@ -145,11 +145,13 @@ def show_fine_alignment(I1_fine_pil, I2, coarseModel):
     plt.imshow(I2)
     plt.subplot(1, 3, 3)
     plt.axis('off')
-    
-    #av = get_Avg_Image(I1_fine_pil, I2)
-    #av.save('./average.png')
-    # plt.imshow(get_Avg_Image(I1_fine_pil, coarseModel.It))
-    # plt.show()    
+    '''
+    av = get_Avg_Image(I1_fine_pil, coarseModel.It)
+    av.save('./average.png')
+    #plt.title('Overlapped Image')
+    #plt.imshow(get_Avg_Image(I1_fine_pil, coarseModel.It))
+    #plt.savefig('./figure.png')
+    plt.show()    
     
 def show_no_alignment(I1, I2):
     plt.figure(figsize=(20, 10))
