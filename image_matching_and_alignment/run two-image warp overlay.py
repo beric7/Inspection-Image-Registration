@@ -14,15 +14,15 @@ def get_Avg_Image(Is, It) :
     Imean = Is_arr * 0.5 + It_arr * 0.5
     return Image.fromarray(Imean.astype(np.uint8))
 
-number = '000569'
-sample_coarse_path = './DATA/SYMPHONY DATASET/WARP 1/'+str(number)+'_warp_1.jpg'
-target_path = './DATA/SYMPHONY DATASET/WARP 2/'+str(number)+'_warp_2.jpg'
+number = '2'
+sample_path = './data/'+'image_1_mask_cracked.png'
+target_path = './data/'+'image_1_cracked.jpeg'
 
-sample_coarse_image = Image.open(sample_coarse_path)
+sample_coarse_image = Image.open(sample_path)
 target_image = Image.open(target_path)
 
 av = get_Avg_Image(sample_coarse_image, target_image)
 
-if not os.path.exists('./DATA/SYMPHONY DATASET/symphony_dataset_comparison/'): # if it doesn't exist already
-    os.makedirs('./DATA/SYMPHONY DATASET/symphony_dataset_comparison/')
-av.save('./DATA/SYMPHONY DATASET/symphony_dataset_comparison/' + 'average_{}'.format(number)+'.png')
+if not os.path.exists('./data/overlay/'): # if it doesn't exist already
+    os.makedirs('./data/overlay/')
+av.save('./data/overlay/' + 'average_{}'.format(number)+'.png')
