@@ -130,45 +130,6 @@ def homography(match_obj, save_dir):
     cv2.imwrite(save_dir + match_obj.get_sample_image_name() + '_keypoints.png', out)
     
 
-def load_model():
-    
-        'choices={indoor, outdoor}, these are the superglue weights'
-        superglue = 'outdoor'
-        
-        'maximum number of keypoints detected by Superpoint'
-        max_keypoints = 1024
-        
-        'SuperPoint keypoint detector confidence threshold'
-        keypoint_threshold = 0.005
-        
-        'SuperPoint Non Maximum Suppression (NMS) radius'
-        nms_radius = 4
-        
-        'Number of Sinkhorn iterations performed by SuperGlue'
-        sinkhorn_iterations = 200
-        
-        'SuperGlue match threshold'
-        match_threshold = 0.8
-    
-        # Load the SuperPoint and SuperGlue models.
-        device = 'cuda' if torch.cuda.is_available else 'cpu'
-        # print('Running inference on device \"{}\"'.format(device))
-        config = {
-            'superpoint': {
-                'nms_radius': nms_radius,
-                'keypoint_threshold': keypoint_threshold,
-                'max_keypoints': max_keypoints
-            },
-            'superglue': {
-                'weights': superglue,
-                'sinkhorn_iterations': sinkhorn_iterations,
-                'match_threshold': match_threshold,
-            }
-        }
-        
-        matching = Matching(config).eval().to(device)
-        return matching, device    
-
 def get_matches(input_0_path, input_n_path, model):    
     mconf, mkpts0, mkpts1, color = match_pairs(input_0_path, input_n_path, model.get_matching(), model.get_device())   
     return mconf, mkpts0, mkpts1, color

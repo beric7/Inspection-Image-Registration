@@ -7,7 +7,7 @@ Created on Fri May 28 16:06:39 2021
 from PIL import Image
 import os
 # Opens a image in RGB mode
-folder = './ransac alignment test building/'
+folder = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/'
 for image_folder in os.listdir(folder):
     
     for image in os.listdir(folder + image_folder):
