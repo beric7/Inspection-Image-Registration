@@ -16,8 +16,11 @@ from match_pairs_fast import match_pairs
 from image_utils import build_image_file_list_sorted
 import numpy as np
 
-from models.matching import Matching
-from models.utils import (compute_pose_error, compute_epipolar_error,
+import sys
+
+sys.path.append('../')
+from superGlue_model.matching import Matching
+from superGlue_model.utils import (compute_pose_error, compute_epipolar_error,
                           estimate_pose, make_matching_plot,
                           error_colormap, AverageTimer, pose_auc, read_image,
                           rotate_intrinsics, rotate_pose_inplane,
@@ -107,7 +110,7 @@ def ransac_flow(network, coarse_model, target_image, sample_image, sample_image_
         
     return sample_image_fine_im
 
-def load_model():
+def load_superglue_model():
     
         'choices={indoor, outdoor}, these are the superglue weights'
         superglue = 'outdoor'

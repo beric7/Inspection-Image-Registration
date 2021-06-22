@@ -16,10 +16,10 @@ import sys
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
-sys.path.append('./utils/')
+sys.path.append('../ransac_utils/')
 import outil
 
-sys.path.append('./ransac_model')
+sys.path.append('../ransac_model')
 from resnet50 import resnet50
 
 from scipy import signal
@@ -40,7 +40,7 @@ class CoarseAlign:
         else : 
             
             resNetfeat = resnet50()
-            featPth = './ransac_model/pretrained/resnet50_moco.pth'
+            featPth = 'D://inspection-image-registration/ransac_flow_master/RANSAC-Flow-master/ransac_model/pretrained/resnet50_moco.pth'
             param = torch.load(featPth)
             state_dict = {k.replace("module.", ""): v for k, v in param['model'].items()}
             msg = 'Loading pretrained model from {}'.format(featPth)
