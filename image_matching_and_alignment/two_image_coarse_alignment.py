@@ -55,8 +55,9 @@ def coarse_alignment_two_img(target_image_path, sample_image_path, save_dir, mod
     target_image = cv2.imread(target_image_path)
     target_image_name = os.path.splitext(os.path.basename(target_image_path))[0]
 
-    if not os.path.exists(save_dir + '/coarse_warped_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/coarse_warped_image/')
+    iden = save_dir.split('/')[-2]
+    if not os.path.exists(save_dir + '/coarse_warped_image_'+iden+'/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/coarse_warped_image_'+iden+'/')
     
     mconf, mkpts_target, mkpts_sample, color = get_matches(target_image_path, sample_image_path, model)
     match_obj = match(mkpts_target, mkpts_sample, mconf, target_image_path, sample_image_path, color) 
@@ -72,9 +73,10 @@ def coarse_alignment_two_img(target_image_path, sample_image_path, save_dir, mod
                       best_match_dict['target_image_path'], 
                       best_match_dict['sample_image_path'],
                       best_match_dict['color'])'''
+    torch.cuda.empty_cache()
     sample_image = Image.open(sample_image_path).convert('RGB')
     coarse_im = ransac_flow_coarse(ransac_network, coarse_model, target_image, sample_image, 
                                    match_obj.get_sample_image_name(), save_dir)
     
-    coarse_im.save(save_dir + '/coarse_warped_image/' + match_obj.get_sample_image_name() + '.jpg')
+    coarse_im.save(save_dir + '/coarse_warped_image_'+iden+'/' + match_obj.get_sample_image_name() + '.jpg')
     # homography_match_obj(match_obj, save_dir + '/homography_warped_image/')

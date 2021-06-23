@@ -10,9 +10,9 @@ from tqdm import tqdm
 import cv2
 
 # rescale(source_image_folder, destination, dimension):
-height = 560
-width = 992
-source = './target/'
+height = 844
+width = 1500
+source = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/targets/6ft_target/'
 destination = './'
 
 if not os.path.exists(destination): # if it doesn't exist already

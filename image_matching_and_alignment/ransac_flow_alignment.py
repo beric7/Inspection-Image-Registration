@@ -88,10 +88,12 @@ def ransac_flow_coarse(network, coarse_model, target_image, sample_image, sample
     target_image = target_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
     sample_image = sample_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
 
-    if not os.path.exists(save_dir + '/coarse_av_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/coarse_av_image/')
+    iden = save_dir.split('/')[-2]
+    
+    if not os.path.exists(save_dir + '/coarse_av_image_'+iden+'/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/coarse_av_image_'+iden+'/')
     
     av = get_Avg_Image(sample_coarse_im, target_image)
-    av.save(save_dir + '/coarse_av_image/' + sample_image_name + '_coarse_average.png')
+    av.save(save_dir + '/coarse_av_image_'+iden+'/' + sample_image_name + '_coarse_average.png')
     
     return sample_coarse_im

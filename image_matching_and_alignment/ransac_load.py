@@ -10,7 +10,7 @@ def ransac_load(resume_path, kernel_size, nb_point):
     nb_scale = 7
     coarse_iter = 10000
     coarse_tolerance = 0.01
-    min_size = 1000
+    min_size = 1500
     imageNet = False # we can also use MOCO feature here
     scale_r = 1.2
     

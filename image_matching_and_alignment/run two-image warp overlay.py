@@ -15,8 +15,9 @@ def get_Avg_Image(Is, It) :
     return Image.fromarray(Imean.astype(np.uint8))
 
 number = '2'
-sample_path = './data/'+'image_1_mask_cracked.png'
-target_path = './data/'+'image_1_cracked.jpeg'
+base_folder = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/outputs_4ft_target/8 ft/'
+sample_path = base_folder + '/fusion/coarse_warped_image/'+'cropped_8ft_L_roll_warped.jpg'
+target_path = base_folder + '/homography_warped_image_8 ft/'+'cropped_8ft_L_roll_warped.jpg'
 
 sample_coarse_image = Image.open(sample_path)
 target_image = Image.open(target_path)
