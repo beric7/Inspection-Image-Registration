@@ -39,8 +39,12 @@ def homography_match_obj(match_obj, save_dir):
     save_path = save_dir + match_obj.get_sample_image_name() +'_warped.jpg'
     cv2.imwrite(save_path, homography_warp)
     
-    if not os.path.exists(save_dir + 'matches/'): # if it doesn't exist already
-        os.makedirs(save_dir + 'matches/')
+    match_save_dir_path, head = os.path.split(save_dir)
+    match_save_dir_path, head = os.path.split(match_save_dir_path)
+    match_save_dir = match_save_dir_path + '/matches/'
     
-    cv2.imwrite(save_dir + 'matches/' + match_obj.get_sample_image_name() + '_keypoints.jpg', out)
+    if not os.path.exists(match_save_dir): # if it doesn't exist already
+        os.makedirs(match_save_dir)
+    
+    cv2.imwrite(match_save_dir + match_obj.get_sample_image_name() + '_keypoints.jpg', out)
     return homography_warp

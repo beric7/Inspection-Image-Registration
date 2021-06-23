@@ -14,7 +14,7 @@ import math
 # rescale(source_image_folder, destination, dimension):
 height = 844
 width = 1500
-source = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/targets/6ft_sq_target/'
+source = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/targets/8ft_sq_target/'
 destination = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/'
 # Create a larger black colored canvas
 
