@@ -12,7 +12,7 @@ from superGlue_model.matching import Matching
 def load_model():
     
         'choices={indoor, outdoor}, these are the superglue weights'
-        superglue = 'outdoor'
+        superglue = 'indoor'
         
         'maximum number of keypoints detected by Superpoint'
         max_keypoints = 1024

@@ -60,7 +60,7 @@ def ransac_flow_frame_coarse(network, coarse_model, target_image, sample_image, 
     return sample_coarse_im
 
 
-def ransac_flow_fine(network, coarse_model, target_image, sample_image, sample_image_name, save_av_dir, save_dir):
+def ransac_flow_fine(network, coarse_model, target_image, sample_image, sample_image_name, save_dir):
     
     sample_coarse, sample_coarse_im, flow_coarse, grid, featt = coarse_alignment(network, coarse_model, sample_image, target_image)
     target_image = target_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
@@ -77,25 +77,21 @@ def ransac_flow_fine(network, coarse_model, target_image, sample_image, sample_i
     sample_image_fine, sample_image_fine_im = fine_alignnment(network, sample_coarse, featt, grid, flow_coarse, coarse_model)
     
     av = get_Avg_Image(sample_image_fine_im, target_image)
-    av.save(save_av_dir + sample_image_name + '_fine_average.png')
+    av.save(save_dir + sample_image_name + '_fine_average.png')
         
     return sample_image_fine_im
 
 
-def ransac_flow_coarse(network, coarse_model, target_image, sample_image, sample_image_name, save_av_dir, save_dir):
+def ransac_flow_coarse(network, coarse_model, target_image, sample_image, sample_image_name, save_dir):
     
     sample_coarse, sample_coarse_im, flow_coarse, grid, featt = coarse_alignment(network, coarse_model, sample_image, target_image)
     target_image = target_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
     sample_image = sample_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
-    
-    # create a file called frame_{}
-    if not os.path.exists(save_dir + '/resize_target/'): # if it doesn't exist already
-        os.makedirs(save_dir + +'/resize_target/')
-    # create a file called frame_{}
-    if not os.path.exists(save_dir + '/warped_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/warped_image/')
+
+    if not os.path.exists(save_dir + '/coarse_av_image/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/coarse_av_image/')
     
     av = get_Avg_Image(sample_coarse_im, target_image)
-    av.save(save_av_dir + sample_image_name + '_coarse_average.png')
+    av.save(save_dir + '/coarse_av_image/' + sample_image_name + '_coarse_average.png')
     
     return sample_coarse_im

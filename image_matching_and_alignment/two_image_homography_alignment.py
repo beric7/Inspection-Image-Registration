@@ -54,20 +54,19 @@ def homography_alignment_two_img(target_image_path, sample_image_path, save_dir,
 
     target_image = cv2.imread(target_image_path)
     target_image_name = os.path.splitext(os.path.basename(target_image_path))[0]
-
-    if not os.path.exists(save_dir + '/homography_warped_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/homography_warped_image/')
+    
+    iden = save_dir.split('/')[-2]
+    if not os.path.exists(save_dir + '/homography_warped_image_'+iden+'/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/homography_warped_image_'+iden+'/')
     
     mconf, mkpts_target, mkpts_sample, color = get_matches(target_image_path, sample_image_path, model)
     match_obj = match(mkpts_target, mkpts_sample, mconf, target_image_path, sample_image_path, color) 
     #best_match_dict = match_obj.get_dict()
         
-    if not os.path.exists(save_dir +'/_av_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/_av_image/') 
+    if not os.path.exists(save_dir +'/homography_av_image_'+iden+'/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/homography_av_image_'+iden+'/') 
     
     # RANSAC FLOW on top images identified through matching
-    target_image = Image.open(target_image_path).convert('RGB')
-    target_image  = ImageOps.exif_transpose(target_image)
     '''  
     match_obj = match(best_match_dict['mkpts_target'], 
                       best_match_dict['mkpts_sample'],
@@ -76,6 +75,11 @@ def homography_alignment_two_img(target_image_path, sample_image_path, save_dir,
                       best_match_dict['sample_image_path'],
                       best_match_dict['color'])'''
         
-    homography_warp = homography_match_obj(match_obj, save_dir + '/homography_warped_image/')
+    homography_warp = homography_match_obj(match_obj, save_dir + '/homography_warped_image_'+iden+'/')
+    homography_warp_path = save_dir + '/homography_warped_image_'+iden+'/' +match_obj.get_sample_image_name() +'_warped.jpg'
+    homography_warp = Image.open(homography_warp_path).convert('RGB')
+    target_image = Image.open(target_image_path).convert('RGB')
+    target_image  = ImageOps.exif_transpose(target_image)
+
     av = get_Avg_Image(homography_warp, target_image)
-    av.save(save_dir +'/_av_image/average_'+match_obj.get_sample_image_name()+'.png')
+    av.save(save_dir +'/homography_av_image_'+iden+'/average_'+match_obj.get_sample_image_name()+'.jpg')
