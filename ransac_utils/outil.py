@@ -46,6 +46,8 @@ def mutualMatching(featA, featB) :
     
         
 def Affine(X, Y):
+    X = X.cpu()
+    Y = Y.cpu()
     H21 = np.linalg.lstsq(Y, X[:, :2])[0]
     H21 = H21.T
     H21 = np.array([[H21[0, 0], H21[0, 1], H21[0, 2]], 
@@ -63,6 +65,7 @@ def Hough(X, Y) :
     H21 = np.array([[H21x[0], 0, H21x[1]],
                     [0, H21y[0], H21y[1]],
                     [0, 0, 1]])
+    H21 = torch.tensor(H21).float().cuda()
     return H21
 
 def Homography(X, Y):

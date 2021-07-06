@@ -13,9 +13,9 @@ from ransac_load import ransac_load
 from tqdm import tqdm
 # Opens a image in RGB mode
 base_folder = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/'
-target_image_path = base_folder + 'targets/6ft_target/cropped_6_normal.png'
+target_image_path = base_folder + 'targets/8ft_sq_target/cropped_8_normal.png'
 data_folder = base_folder + 'pre-processed_data/'
-save_dir = base_folder + 'outputs_6ft_target/'
+save_dir = base_folder + 'outputs_8ft_sq_target/'
 
 if not os.path.exists(save_dir): # if it doesn't exist already
     os.makedirs(save_dir)

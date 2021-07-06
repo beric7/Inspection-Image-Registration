@@ -18,5 +18,6 @@ def ransac_load(resume_path, kernel_size, nb_point):
     scale_r = 2.0 # this indicates the different scales 
     
     ransac_network = load_pretrained_model(resume_path, kernel_size, nb_point)
+    # nbScale, nbIter, tolerance, transform, minSize, segId = 1, segFg = True, imageNet = True, scaleR = 2)
     coarse_model = set_RANSAC_param(nb_scale, coarse_iter, coarse_tolerance, min_size, imageNet, scale_r)
     return coarse_model, ransac_network

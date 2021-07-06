@@ -59,12 +59,14 @@ class CoarseAlign:
         self.toTensor = transforms.ToTensor()
         self.preproc = transforms.Compose([transforms.ToTensor(), normalize,])
         
-        if transform == 'Affine' :
+        if transform == 'Affine':
             self.Transform = outil.Affine
+            # 3
             self.nbPoint = 3
 
         else : 
             self.Transform = outil.Homography
+            # 4
             self.nbPoint = 4
             
         self.strideNet = 16
