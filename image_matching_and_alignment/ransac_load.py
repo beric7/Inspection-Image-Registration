@@ -13,7 +13,7 @@ def ransac_load(resume_path, kernel_size, nb_point):
     nb_scale = 7 # this indicates thenumber of steps between the scales
     coarse_iter = 10000
     coarse_tolerance = 0.01
-    min_size = 1500
+    min_size = 512
     imageNet = False # we can also use MOCO feature here
     scale_r = 2.0 # this indicates the different scales 
     
