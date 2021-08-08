@@ -10,11 +10,12 @@ from two_image_homography_alignment import homography_alignment_two_img
 from load_superGlue_model import load_model
 from model_class import model
 from tqdm import tqdm
+
 # Opens a image in RGB mode
-base_folder = 'C://Users/Admin/Documents/data_image_registration/6-18-2020-lab_test/'
-target_image_path = base_folder + 'targets/8ft_sq_target/cropped_8_normal.png'
-data_folder = base_folder + 'pre-processed_data/'
-save_dir = base_folder + 'outputs_8ft_sq_target/'
+base_folder = 'C://Users/Admin/OneDrive - Virginia Tech/Desktop/data_preliminary_experiments/'
+target_image_path = base_folder + 'cropped_all points large increase.png'
+source_image_path = base_folder + 'cropped_left small increase.png'
+save_dir = base_folder + 'results/small_increase/'
 
 if not os.path.exists(save_dir): # if it doesn't exist already
     os.makedirs(save_dir)
@@ -25,7 +26,9 @@ model = model()
 model.set_device(device)
 model.set_matching(matching)
 
+homography_alignment_two_img(target_image_path, source_image_path, save_dir, model)
 
+'''
 for image_folder in tqdm(os.listdir(data_folder)):
     if os.path.isdir(data_folder+image_folder):
         for image in tqdm(os.listdir(data_folder + image_folder)):
@@ -36,5 +39,5 @@ for image_folder in tqdm(os.listdir(data_folder)):
         for image in tqdm(os.listdir(data_folder)):
             sample_image_path = data_folder + image
             # homography_alignment_two_img(target_image_path, sample_image_path, save_dir, model, coarse_model, ransac_network)
-            homography_alignment_two_img(target_image_path, sample_image_path, save_dir, model)
+            homography_alignment_two_img(target_image_path, sample_image_path, save_dir, model)'''
         

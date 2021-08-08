@@ -150,17 +150,18 @@ def rescale(source_image_folder, destination, dimension):
         cv2.imwrite(destination + '/' + filename, image)
 
 #rescale('./bearings/', './bearings/', 512)'''
-
+base = 'C://Users/Admin/OneDrive - Virginia Tech/Documents/data_image_registration/ZED_captures_outdoor_beams/'
+id = 'beam_2_targets_reversed_many_frames/'
 image_name = 'v2'
-source_image_dir = './concatinated_samples/compare_v2_to_v3/images/'
-destination_dir = './concatinated_samples/compare_v2_to_v3/v2/'
+source_image_dir = base + id
+destination_dir = './concatinated_samples/' + id
 image_list_dir = source_image_dir
 
 dim1 = 3
 dim2 = 1
 
 image_list = make_image_list(source_image_dir)
-directory_list = ['./concatinated_samples/compare_v2_to_v3/v2/combinations/', './concatinated_samples/compare_v2_to_v3/v3/combinations/']
+directory_list = [source_image_dir, source_image_dir]
 concat_lists(image_list, directory_list, './multi_concat/', pad=True, orientation=1)
 '''
 dim1 = 1

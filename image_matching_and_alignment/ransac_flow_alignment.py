@@ -66,18 +66,15 @@ def ransac_flow_fine(network, coarse_model, target_image, sample_image, sample_i
     target_image = target_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
     sample_image = sample_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
     
-    # create a file called frame_{}
-    if not os.path.exists(save_dir + '/resize_target/'): # if it doesn't exist already
-        os.makedirs(save_dir + +'/resize_target/')
-    # create a file called frame_{}
-    if not os.path.exists(save_dir + '/warped_image/'): # if it doesn't exist already
-        os.makedirs(save_dir + '/warped_image/')
+    iden = save_dir.split('/')[-2]
                
-    target_image.save(save_dir + '/resize_target/target.png')
     sample_image_fine, sample_image_fine_im = fine_alignnment(network, sample_coarse, featt, grid, flow_coarse, coarse_model)
-    
+        
+    if not os.path.exists(save_dir + '/fine_av_image_'+iden+'/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/fine_av_image_'+iden+'/')
+        
     av = get_Avg_Image(sample_image_fine_im, target_image)
-    av.save(save_dir + sample_image_name + '_fine_average.png')
+    av.save(save_dir + '/fine_av_image_'+iden+'/' + '_fine_average.png')
         
     return sample_image_fine_im
 

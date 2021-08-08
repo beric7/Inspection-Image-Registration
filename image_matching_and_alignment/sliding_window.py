@@ -116,18 +116,19 @@ def generate_mask_error(error_grid, target_im, stepSize_x, stepSize_y, white_mas
     mask_grid = np.zeros((target_im.shape[0], target_im.shape[1], target_im.shape[2]))
 
     x_count = 0
-    y_count = 0
+    threshold_count = 0
     for x in range(0, target_im.shape[1], stepSize_x):
         y_count = 0
         for y in range(0, target_im.shape[0], stepSize_y):
             temp_kpt_win = error_grid[[y_count], [x_count]]
             if temp_kpt_win <= threshold:
                 mask_grid[y:y + stepSize_y, x:x + stepSize_x:] = white_mask
+                threshold_count += 1
             y_count = y_count + 1
 
         x_count = x_count + 1
 
-    return mask_grid
+    return mask_grid, threshold_count
 
 def slidingWindow_error(image_grid, error_grid, number_x, number_y, stepSize_x, stepSize_y):
     
@@ -150,8 +151,8 @@ def smallestDivisor(n):
            print("Smallest divisor is:",a[0])
            return int(a[0])
       
-def optimalSize(step, n):
-    if n >= 12 or step <= 200:
+def optimalSize(step, n, set_min_n=12, set_max_step=64):
+    if n >= set_min_n or step <= set_max_step:
         return step, n
     else:
         divider = smallestDivisor(step)
@@ -159,7 +160,7 @@ def optimalSize(step, n):
         n = divider * n
         if step == 1:
             return divider, int(n/divider)
-        return optimalSize(step, n)
+        return optimalSize(step, n, set_min_n, set_max_step)
  
 def imageGrid(image, stepSize_x, stepSize_y):
     
@@ -195,15 +196,15 @@ def keypointGrid(mkpts0, stepSize_x, stepSize_y, number_x, number_y):
     
     return keypoint_grid
 
-def gridImage(image):
+def gridImage(image, set_min_n, set_max_step):
     x_im = image.shape[1]
     y_im = image.shape[0]
     
     gcd = math.gcd(x_im, y_im)
 
-    stepSize_x, number_x = optimalSize(x_im, 1)
+    stepSize_x, number_x = optimalSize(x_im, 1, set_min_n, set_max_step)
     stepSize_x = int(stepSize_x)
-    stepSize_y, number_y = optimalSize(y_im, 1)
+    stepSize_y, number_y = optimalSize(y_im, 1, set_min_n, stepSize_x)
     stepSize_y = int(stepSize_y)
     
     
@@ -299,7 +300,7 @@ def homography(mkpts1, mkpts0, sample_image):
 
     return homography_warp
 
-def keypt_main(source_image_directory, target_image_path, save_dir, threshold, resize=False, resize_shape=(512,512)):
+def keypt_main(source_image_directory, target_image_path, save_dir, threshold, resize=False, resize_shape=(512,512), set_min_n=12, set_max_step=64):
 
     # reads the target image into memory
     target_im = cv2.imread(target_image_path)
@@ -310,7 +311,7 @@ def keypt_main(source_image_directory, target_image_path, save_dir, threshold, r
     cv2.imwrite('./temp_target.png', target_im)
     # determine the step size based on parameters. Creates an image with the grid
     # overlayed to demonstrate the box sizes.
-    grid_image, stepSize_x, stepSize_y, number_x, number_y = gridImage(target_im)
+    grid_image, stepSize_x, stepSize_y, number_x, number_y = gridImage(target_im, set_min_n, set_max_step)
 
     target_im = cv2.imread(target_image_path)
 
@@ -356,7 +357,7 @@ def keypt_main(source_image_directory, target_image_path, save_dir, threshold, r
         masked_image = cv2.bitwise_and(target_im, mask)
         cv2.imwrite(img_save_name, masked_image)
 
-def rsme_main(source_image_directory, target_image_path, save_dir, error_threshold, resize=False, resize_shape=(512,512)):
+def rsme_main(source_image_directory, target_image_path, save_dir, error_threshold, resize=False, resize_shape=(512,512), set_min_n=12, set_max_step=64):
     # reads the target image into memory
     target_im = cv2.imread(target_image_path)
 
@@ -366,7 +367,7 @@ def rsme_main(source_image_directory, target_image_path, save_dir, error_thresho
     cv2.imwrite('./temp_target.png', target_im)
     # determine the step size based on parameters. Creates an image with the grid
     # overlayed to demonstrate the box sizes.
-    grid_image, stepSize_x, stepSize_y, number_x, number_y = gridImage(target_im)
+    grid_image, stepSize_x, stepSize_y, number_x, number_y = gridImage(target_im, set_min_n, set_max_step)
 
     target_im = cv2.imread(target_image_path)
 
@@ -398,8 +399,6 @@ def rsme_main(source_image_directory, target_image_path, save_dir, error_thresho
         print('image name: ' + image_name)
         error, av_total_err = rsmeWindows(mkpts0, mkpts1)
 
-        img_save_name = save_dir + image_name + '_' + str(av_total_err) + '_' + 'masked_high_error_density.png'
-
         rsme_grid = rsmeGrid(mkpts0, error, stepSize_x, stepSize_y, number_x, number_y)
         # rsme_grid_t = rsme_grid.transpose()
 
@@ -407,7 +406,10 @@ def rsme_main(source_image_directory, target_image_path, save_dir, error_thresho
         heatmap(rsme_grid, image_name + '_' + str(av_total_err), target_im, save_dir, error_threshold, False)
 
         # generate masks over high-density error
-        mask = generate_mask_error(rsme_grid, target_im, stepSize_x, stepSize_y, white_mask, error_threshold)
+        mask, threshold_count = generate_mask_error(rsme_grid, target_im, stepSize_x, stepSize_y, white_mask, error_threshold)
         mask = mask.astype(np.uint8)
         masked_image = cv2.bitwise_and(target_im, mask)
+
+        img_save_name = save_dir + image_name + '_' + str(av_total_err) + '_' + 'thres_ct_' + str(threshold_count) + '_' + 'masked_high_error_density.png'
+
         cv2.imwrite(img_save_name, masked_image)

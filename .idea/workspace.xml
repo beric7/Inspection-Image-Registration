@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e7189f5d-a6c0-42fd-b6a6-31257cd4f6f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/image_matching_and_alignment/run_rsme_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image_matching_and_alignment/run_rsme_select_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_matching_and_alignment/run_rsme_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/image_matching_and_alignment/run_rsme_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_matching_and_alignment/temp_source.png" beforeDir="false" afterPath="$PROJECT_DIR$/image_matching_and_alignment/temp_source.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_matching_and_alignment/temp_target.png" beforeDir="false" afterPath="$PROJECT_DIR$/image_matching_and_alignment/temp_target.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,10 +36,15 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/image_matching_and_alignment" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.run_rsme_main">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Admin\OneDrive - Virginia Tech\Documents\GitHub\Inspection-Image-Registration\image_matching_and_alignment" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.run_rsme_select_main">
     <configuration name="rmse_run" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Inspection-Image-Registration" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -77,6 +87,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="run_rsme_select_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Inspection-Image-Registration" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/image_matching_and_alignment" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/image_matching_and_alignment/run_rsme_select_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="sliding_window" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Inspection-Image-Registration" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -100,6 +131,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.run_rsme_select_main" />
         <item itemvalue="Python.run_rsme_main" />
         <item itemvalue="Python.sliding_window" />
         <item itemvalue="Python.rmse_run" />
@@ -127,6 +159,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -138,30 +171,67 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py</url>
-          <line>237</line>
+          <line>238</line>
           <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py</url>
-          <line>236</line>
+          <line>237</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py</url>
-          <line>62</line>
-          <option name="timeStamp" value="54" />
+          <line>157</line>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py</url>
-          <line>63</line>
-          <option name="timeStamp" value="55" />
+          <line>154</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window.py</url>
-          <line>66</line>
-          <option name="timeStamp" value="56" />
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>279</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>280</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>281</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>438</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>432</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>434</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/image_matching_and_alignment/sliding_window_select.py</url>
+          <line>433</line>
+          <option name="timeStamp" value="97" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

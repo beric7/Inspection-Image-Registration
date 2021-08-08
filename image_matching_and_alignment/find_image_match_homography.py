@@ -16,13 +16,23 @@ from match_pairs_fast import match_pairs
 from image_utils import build_image_file_list_sorted
 import numpy as np
 
-from models.matching import Matching
-from models.utils import (compute_pose_error, compute_epipolar_error,
+import sys
+sys.path.append('../')
+from superGlue_model.matching import Matching
+from superGlue_model.utils import (compute_pose_error, compute_epipolar_error,
                           estimate_pose, make_matching_plot_fast,
                           error_colormap, AverageTimer, pose_auc, read_image,
                           rotate_intrinsics, rotate_pose_inplane,
                           scale_intrinsics)
 # ============================================================================
+
+# RANSAC:
+# ----------------------------------------------------------------------------
+from RANSAC_flow_functions import load_pretrained_model, set_RANSAC_param 
+from RANSAC_flow_functions import fine_alignnment, coarse_alignment
+from RANSAC_flow_functions import show_coarse_alignment, show_fine_alignment, show_no_alignment
+from PIL import Image
+from PIL import ImageOps
 
 import heapq
 
@@ -94,6 +104,45 @@ class match():
     def get_color(self):
         return self.color
 
+def load_superglue_model():
+    
+        'choices={indoor, outdoor}, these are the superglue weights'
+        superglue = 'outdoor'
+        
+        'maximum number of keypoints detected by Superpoint'
+        max_keypoints = 1024
+        
+        'SuperPoint keypoint detector confidence threshold'
+        keypoint_threshold = 0.005
+        
+        'SuperPoint Non Maximum Suppression (NMS) radius'
+        nms_radius = 4
+        
+        'Number of Sinkhorn iterations performed by SuperGlue'
+        sinkhorn_iterations = 200
+        
+        'SuperGlue match threshold'
+        match_threshold = 0.5
+    
+        # Load the SuperPoint and SuperGlue models.
+        device = 'cuda' if torch.cuda.is_available else 'cpu'
+        # print('Running inference on device \"{}\"'.format(device))
+        config = {
+            'superpoint': {
+                'nms_radius': nms_radius,
+                'keypoint_threshold': keypoint_threshold,
+                'max_keypoints': max_keypoints
+            },
+            'superglue': {
+                'weights': superglue,
+                'sinkhorn_iterations': sinkhorn_iterations,
+                'match_threshold': match_threshold,
+            }
+        }
+        
+        matching = Matching(config).eval().to(device)
+        return matching, device    
+
 def get_Avg_Image(Is, It) : 
     
     Is_arr, It_arr = np.array(Is) , np.array(It)
@@ -122,14 +171,60 @@ def homography(match_obj, save_dir):
     
     homography_matrix, _ = cv2.findHomography(mkpts1, mkpts0, method=cv2.RANSAC, ransacReprojThreshold=1)
     homography_warp = cv2.warpPerspective(sample_image, homography_matrix, (sample_image.shape[1], sample_image.shape[0]))
-    cv2.imshow('', homography_warp)
-    cv2.waitKey(0)
-    save_path = save_dir + match_obj.get_sample_image_name() +'_warped.png'
-    cv2.imwrite(save_dir + 'target.png', target_image)
-    cv2.imwrite(save_path, homography_warp)
-    cv2.imwrite(save_dir + match_obj.get_sample_image_name() + '_keypoints.png', out)
+    save_path = save_dir + 'homography_warped_image/' + match_obj.get_sample_image_name() +'_warped.png'
     
+    # target image
+    cv2.imwrite(save_dir + 'target.png', target_image)
+    
+    # homography warped image
+    cv2.imwrite(save_path, homography_warp)
+    
+    # average image
+    av = get_Avg_Image(cv2.cvtColor(homography_warp, cv2.COLOR_RGB2BGR), cv2.cvtColor(target_image, cv2.COLOR_RGB2BGR))
+    av.save(save_dir + 'exemplar_av_image/' + match_obj.get_sample_image_name() + '_average.png')
+    
+    # keypoint output
+    cv2.imwrite(save_dir + 'keypoints/'+ match_obj.get_sample_image_name() + '_keypoints.png', out)
 
+def ransac_load(resume_path, kernel_size, nb_point): 
+    
+    nb_scale = 7
+    coarse_iter = 10000
+    coarse_tolerance = 0.01
+    min_size = 1000
+    imageNet = False # we can also use MOCO feature here
+    scale_r = 1.2
+    
+    ransac_network = load_pretrained_model(resume_path, kernel_size, nb_point)
+    coarse_model = set_RANSAC_param(nb_scale, coarse_iter, coarse_tolerance, min_size, imageNet, scale_r)
+    return coarse_model, ransac_network
+
+
+def ransac_flow(network, coarse_model, target_image, sample_image, sample_image_name, save_av_dir, save_dir, target_n):
+    sample_coarse, sample_coarse_im, flow_coarse, grid, featt = coarse_alignment(network, coarse_model, sample_image, target_image)
+    target_image = target_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
+    sample_image = sample_image.resize((sample_coarse_im.size[0], sample_coarse_im.size[1]))
+    
+    # create a file called frame_{}
+    if not os.path.exists(save_dir + '/frame_{}'.format(target_n)+'/resize_target/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/frame_{}'.format(target_n)+'/resize_target/')
+    # create a file called frame_{}
+    if not os.path.exists(save_dir + '/frame_{}'.format(target_n)+'/warped_image/'): # if it doesn't exist already
+        os.makedirs(save_dir + '/frame_{}'.format(target_n)+'/warped_image/')
+        
+    sample_image.save(save_dir + '/frame_{}'.format(target_n)+'/warped_image/' + 'x.png')   
+    sample_coarse_im.save(save_dir + '/frame_{}'.format(target_n)+'/warped_image/' + 'warped.png')
+    target_image.save(save_dir + '/frame_{}'.format(target_n)+'/warped_image/' + 'u.png')
+        
+    target_image.save(save_dir + '/frame_{}'.format(target_n)+'/resize_target/target.png')
+    sample_image_fine, sample_image_fine_im = fine_alignnment(network, sample_coarse, featt, grid, flow_coarse, coarse_model)
+    
+    av = get_Avg_Image(sample_coarse_im, target_image)
+    av.save(save_av_dir + 'average.png')
+    
+    # show_fine_alignment(sample_coarse_im, target_image, sample_coarse_im)
+        
+    return sample_image_fine_im
 def get_matches(input_0_path, input_n_path, model):    
     mconf, mkpts0, mkpts1, color = match_pairs(input_0_path, input_n_path, model.get_matching(), model.get_device())   
     return mconf, mkpts0, mkpts1, color
@@ -187,7 +282,7 @@ def find_peak(model, keypts_target, keypts_sample, target_image_path, sample_ima
         best_match_dict_list.append(temp_match.get_dict())
         number_keypoints = len(temp_match.get_mconf())
         
-        if number_keypoints >= 20:
+        if number_keypoints >= 0:
             
             print('path: ', temp_match.get_sample_image_path)
             print('keypoints: ', number_keypoints)
@@ -196,7 +291,7 @@ def find_peak(model, keypts_target, keypts_sample, target_image_path, sample_ima
                 best_match_dict_list = heapq.nlargest(3, best_match_dict_list, key=lambda s: s['number_keypoints'])
                 past_count = 1
                 bool_count = False
-                mconf_smallest = heapq.nsmallest(1, best_match_dict_list, key=lambda s: s['number_keypoints'])
+                mconf_smallest = heapq.nsmallest(1, best_match_dict_list, key=lambda s: s['number_keypoints'])[0]['number_keypoints']
                 best_image_number = sample_image_number
                 
                 try:
@@ -261,8 +356,6 @@ def find_matching_image(target_image_dir, sample_image_dir, save_dir, model,
     
     best_mconf = 0
     
-    best_match_dict_list = []
-    
     # set exemplar image list max size    
     model.set_exemplar_num(exemplar_image_num)
     exemplar_sample_image_list = []
@@ -296,6 +389,8 @@ def find_matching_image(target_image_dir, sample_image_dir, save_dir, model,
         
         sample_image_number = best_image_number - 10
         
+        best_match_dict_list = []
+        
         if sample_image_number < 0:
             sample_image_number = 0
         # We are finding the best-matched pairs using the current target image, 
@@ -314,15 +409,23 @@ def find_matching_image(target_image_dir, sample_image_dir, save_dir, model,
         if not os.path.exists(save_dir + '/frame_{}'.format(target_n)+'/exemplar_av_image/'): # if it doesn't exist already
             os.makedirs(save_dir + '/frame_{}'.format(target_n)+'/exemplar_av_image/') 
             
+        if not os.path.exists(save_dir + '/frame_{}'.format(target_n)+'/keypoints/'): # if it doesn't exist already
+            os.makedirs(save_dir + '/frame_{}'.format(target_n)+'/keypoints/') 
+        
+        count_exemplar = 0
         for match_dict in best_match_dict_list:
-            match_obj = match(match_dict['mkpts_target'], 
-                               match_dict['mkpts_sample'],
-                               match_dict['mconf'], 
-                               match_dict['target_image_path'], 
-                               match_dict['sample_image_path'],
-                               match_dict['color'])
-            
-            homography(match_obj, save_dir + '/frame_{}'.format(target_n)+'/homography_warped_image/')
+            if count_exemplar < exemplar_image_num:
+                match_obj = match(match_dict['mkpts_target'], 
+                                   match_dict['mkpts_sample'],
+                                   match_dict['mconf'], 
+                                   match_dict['target_image_path'], 
+                                   match_dict['sample_image_path'],
+                                   match_dict['color'])
+                
+                homography(match_obj, save_dir + '/frame_{}'.format(target_n)+'/')
+                count_exemplar+=1
+            else:
+                break
 
         # --------------------------------------------------------------------
         # At this point we have image pairs which have met the criteria for being the 

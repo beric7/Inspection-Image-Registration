@@ -11,10 +11,9 @@ from find_image_match_homograpy import ransac_load
 
 # Input information:
 # ----------------------------------------------------------------------------
-d = ''
-target_image_dir = './data/'+d+'/target/' # the older inspection
-sample_image_dir = './data/'+d+'/sample/' # the newer inspection
-save_dir = './data/'+d+'/test/'
+target_image_dir = 'C://Users/Admin/OneDrive - Virginia Tech/Documents/data_image_registration/ZED_captures_outdoor_beams/beam_1_targets/' # the older inspection
+sample_image_dir = 'C://Users/Admin/OneDrive - Virginia Tech/Documents/data_image_registration/ZED_captures_outdoor_beams/beam_1-0_frames_source/' # the newer inspection
+save_dir = 'C://Users/Admin/OneDrive - Virginia Tech/Documents/data_image_registration/ZED_captures_outdoor_beams/beam_1-0_frames_source_output/'
 exemplar_image_num = 3
 # ----------------------------------------------------------------------------
 

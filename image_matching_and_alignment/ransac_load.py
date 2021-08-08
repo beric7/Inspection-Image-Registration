@@ -13,9 +13,9 @@ def ransac_load(resume_path, kernel_size, nb_point):
     nb_scale = 7 # this indicates thenumber of steps between the scales
     coarse_iter = 10000
     coarse_tolerance = 0.01
-    min_size = 512
+    min_size = 1500
     imageNet = False # we can also use MOCO feature here
-    scale_r = 2.0 # this indicates the different scales 
+    scale_r = 1.2 # this indicates the different scales 
     
     ransac_network = load_pretrained_model(resume_path, kernel_size, nb_point)
     # nbScale, nbIter, tolerance, transform, minSize, segId = 1, segFg = True, imageNet = True, scaleR = 2)

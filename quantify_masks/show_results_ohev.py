@@ -13,7 +13,7 @@ from tqdm import tqdm
 import os
 import numpy as np
 
-def generate_images(model, image_path, name, destination_mask, destination_overlays, destination_ohev):
+def generate_images(model, image_path, name, destination_mask, destination_overlays, destination_ohev, destination_fit_im):
     
     if not os.path.exists(destination_mask): # if it doesn't exist already
         os.makedirs(destination_mask)  
@@ -22,12 +22,18 @@ def generate_images(model, image_path, name, destination_mask, destination_overl
         os.makedirs(destination_overlays) 
         
     if not os.path.exists(destination_ohev): # if it doesn't exist already
-        os.makedirs(destination_ohev) 
+        os.makedirs(destination_ohev)
+    
+    if not os.path.exists(destination_fit_im): # if it doesn't exist already
+        os.makedirs(destination_fit_im) 
         
     # name of the file without the extension
     name = name.split('.')[-2]
     
     image = cv2.imread(image_path)
+    # image = cv2.resize(image, fix_size)
+    
+    
     # assumes that the image is png...
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # cv2.imshow('show', image)
@@ -42,8 +48,11 @@ def generate_images(model, image_path, name, destination_mask, destination_overl
     cw2, ch2 = int(crop_width/2), int(crop_height/2) 
     crop_img = image[mid_y-ch2:mid_y+ch2, mid_x-cw2:mid_x+cw2]
     image = cv2.resize(crop_img, (512,512))
+    
     img = image.transpose(2,0,1)
     img = img.reshape(1,3,512,512)
+    
+    cv2.imwrite(destination_fit_im+'/'+name+'.png', image)
     
     with torch.no_grad():
         mask_pred = model(torch.from_numpy(img).type(torch.cuda.FloatTensor))
